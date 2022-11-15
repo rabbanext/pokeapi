@@ -1,31 +1,42 @@
 <template>
-  <img alt="Vue logo" src="./assets/img/logo.png" height="100">
-  <h1>My Collection</h1>
-  <input type="text" v-model="keyword">
+  <input type="text" v-model="keyword" placeholder="Search collection..." autofocus>
   <!-- {{ keyword }} -->
   <div class="cards">
     <div class="card" v-for="(detail, index) in search" :key="index" @click="clickCard(detail)">
       <div class="card-face">
         <div class="card-label">
-          <p style="color:black">name: {{ detail.name }}</p>
+          <img :src="detail.sprites.other.home.front_default" height="100">
+          <p style="color:black">{{ detail.name }}</p>
         </div>
       </div>
     </div>
   </div>
+  <h1 class="total">
+    <img src="./assets/img/logo.png" height="100"><br>
+    Total collection: {{ pokemonDetail.length }}
+  </h1>
   <!-- <div v-for="(detail, index) in search" :key="index">
     <img :src="detail.sprites.other.home.front_default" height="100">
     <p style="color:black">name: {{ detail.name }}</p>
     <p style="color:black">Height: {{ detail.height }}</p>
   </div> -->
+
   <!-- Modal -->
   <div id="myModal" class="modal" v-if="isModalOpen">
     <div class="modal-content">
+      <img :src="selectedPokemon.sprites.other.home.front_default" class="pokeImage">
       <span class="close" @click="isModalOpen = !isModalOpen">&times;</span>
-      <p>{{ selectedPokemon.name }}</p>
+      <h1>{{ selectedPokemon.name }}<a class="typeLabel">{{ selectedPokemon.types[0].type.name }}</a></h1>
+      <div class="detailBox">
+        <p><strong>Height:</strong> {{ selectedPokemon.height }}</p>
+        <p><strong>Weight:</strong> {{ selectedPokemon.weight }}</p>
+        <p><strong>Ability:</strong> {{ selectedPokemon.abilities[0].ability.name }}</p>
+      </div>
     </div>
   </div>
 </template>
 <!-- https://pokeapi.co/api/v2/pokemon-species/1/ -->
+
 <script>
 export default {
   data: () => ({
@@ -58,7 +69,7 @@ export default {
       const data = await fetch(element.url).then(
         response => response.json())
       // ini
-      // console.log(data)
+      console.log(data)
       this.pokemonDetail.push(data)
     }
     this.pokemonList = pokeData.results
@@ -77,6 +88,7 @@ export default {
 html,
 body {
   height: 100%;
+  font-family: 'helvetica neue', helvetica, arial, sans-serif;
 }
 
 body {
@@ -84,8 +96,27 @@ body {
   overflow: hidden;
 }
 
-.cards {
+input {
+  display: block;
+  margin: auto;
+  width: 80vw;
+  padding: 10px;
+  margin-top: 20vh;
+  font-size: 30px;
+  border-radius: 5px;
+}
+
+.total {
+  color: #fff;
+  left: 50%;
+  display: flex;
   bottom: 0;
+  position: fixed;
+  transform: translateX(-50%);
+}
+
+.cards {
+  bottom: 30vh;
   display: flex;
   height: 150px;
   padding: 0 50px;
@@ -96,10 +127,10 @@ body {
 }
 
 .card {
-  height: 150px;
+  height: 200px;
   margin: 0 -25px;
   position: relative;
-  width: 100px;
+  width: 150px;
 
   &:after {
     // uncomment background below to see hit areas
@@ -110,11 +141,12 @@ body {
     position: absolute;
     right: -60px;
     top: 0px;
-    z-index: 10
+    z-index: 10;
   }
 }
 
 .card-face {
+  border-radius: 15px;
   bottom: 0;
   content: '';
   left: 0;
@@ -138,8 +170,7 @@ body {
 }
 
 .card-label {
-  font-family: 'helvetica neue', helvetica, arial, sans-serif;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   letter-spacing: -0.025em;
   padding: 15px 0 0 15px;
@@ -204,43 +235,68 @@ $total: 20;
 
 // Modal
 .modal {
+  color: #fff;
   display: block;
-  /* Hidden by default */
   position: fixed;
-  /* Stay in place */
   z-index: 1;
-  /* Sit on top */
-  padding-top: 100px;
-  /* Location of the box */
+  padding: 10px;
+  bottom: 10px;
   left: 0;
-  top: 0;
   width: 100%;
-  /* Full width */
-  height: 100%;
-  /* Full height */
-  overflow: auto;
-  /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0);
-  /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4);
-  /* Black w/ opacity */
+}
+
+.pokeImage {
+  margin-top: 20px;
+  background-color: rgba(255, 255, 255, 0.5);
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
 }
 
 /* Modal Content */
 .modal-content {
-  background-color: #fefefe;
+  background: rgb(71, 12, 78);
+  background: linear-gradient(rgba(71, 12, 78, 1) 0%, rgba(201, 70, 7, 1) 30%, rgba(70, 15, 15, 1) 100%);
   margin: auto;
+  height: 80vh;
+  padding: 0 20px;
+  border: 3px solid rgb(36, 0, 0);
+  width: 400px;
+  border-radius: 20px;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.typeLabel {
+  background-color: #00ffea;
+  border: none;
+  color: #000;
+  padding: 5px 20px;
+  border-radius: 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 10px;
+  font-size: 15px;
+}
+
+.detailBox {
+  background-color: #fff;
+  height: auto;
+  border-radius: 20px;
   padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
+  color: #000;
 }
 
 /* The Close Button */
 .close {
-  color: #aaaaaa;
+  color: #ffffff;
   float: right;
-  font-size: 28px;
+  font-size: 55px;
   font-weight: bold;
+  line-height: 35px;
 }
 
 .close:hover,
