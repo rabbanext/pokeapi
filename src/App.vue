@@ -1,12 +1,11 @@
 <template>
   <img alt="Vue logo" src="./assets/img/logo.png" height="100">
   <h1>My Collection</h1>
+  <input type="text" v-model="keyword">
+  <!-- {{ keyword }} -->
   <ul>
-    <!-- <li v-for="(pokemon, index) in pokemonList" :key="`poke-${index}`">
-      <a :href="pokemon.url">{{ pokemon.name }}</a>
-    </li> -->
-    <li v-for="(detail, index) in pokemonDetail" :key="index">
-      <img :src="detail.sprites.other.home.front_default">
+    <li v-for="(detail, index) in search" :key="index">
+      <img :src="detail.sprites.other.home.front_default" height="100">
       <p style="color:black">name: {{ detail.name }}</p>
       <p style="color:black">Height: {{ detail.height }}</p>
     </li>
@@ -16,9 +15,21 @@
 <script>
 export default {
   data: () => ({
-    pokemonList: [],
-    pokemonDetail: []
+    // pokemonList: [],
+    pokemonDetail: [],
+    keyword: ''
   }),
+  computed: {
+    search() {
+      if (this.keyword) {
+        return this.pokemonDetail.filter((obj) => {
+          // console.log(obj.name)
+          return obj.name.match(this.keyword)
+        });
+      }
+      return this.pokemonDetail
+    }
+  },
   async mounted() {
     const pokeData = await fetch('https://pokeapi.co/api/v2/pokemon').then(
       response => response.json()
@@ -31,7 +42,7 @@ export default {
       const data = await fetch(element.url).then(
         response => response.json())
       // ini
-      console.log(data)
+      // console.log(data)
       this.pokemonDetail.push(data)
     }
     this.pokemonList = pokeData.results
