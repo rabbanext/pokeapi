@@ -1,6 +1,7 @@
+<!-- https://pokeapi.co/api/v2/pokemon-species/1/ -->
 <template>
   <input type="text" v-model="keyword" placeholder="Search collection..." autofocus>
-  <!-- {{ keyword }} -->
+
   <div class="cards">
     <div class="card" v-for="(detail, index) in search" :key="index" @click="clickCard(detail)">
       <div class="card-face">
@@ -11,10 +12,12 @@
       </div>
     </div>
   </div>
+
   <h1 class="total">
     <img src="./assets/img/logo.png" height="100"><br>
     Total collection: {{ pokemonDetail.length }}
   </h1>
+
   <!-- <div v-for="(detail, index) in search" :key="index">
     <img :src="detail.sprites.other.home.front_default" height="100">
     <p style="color:black">name: {{ detail.name }}</p>
@@ -35,7 +38,6 @@
     </div>
   </div>
 </template>
-<!-- https://pokeapi.co/api/v2/pokemon-species/1/ -->
 
 <script>
 export default {
